@@ -1,4 +1,4 @@
-# 📊 DJIA Analysis
+# DJIA Analysis
 
 ### Overview
 This project involves analyzing the individual stocks inside the **Dow Jones Industrial Average (DJIA)** to determine whether **higher risk leads to higher returns** inside of this specific world of blue-chip stocks. The pipeline will ingest historical price data, calculate metrics for risk (e.g., standard deviation/volatility) and return (e.g., average return), and use statistical modeling to test the relationship.
