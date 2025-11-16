@@ -6,7 +6,7 @@ This project involves analyzing the individual stocks inside the **Dow Jones Ind
 ### Project Goal
 To design and implement:
 - A **data ingestion and cleaning module** that reliably fetches and processes historical stock data for all 30 DJIA components.
-- A **Financial Metrics Module** to calculate annualized **risk (volatility)** and **return** for each stock.
+- A **financial metrics module** to calculate annualized **risk (volatility)** and **return** for each stock.
 - A **statistical model** to quantify the relationship between calculated risk and return.
 - A **single-point runner script** to execute the entire analysis and generate a final conclusion report.
 
