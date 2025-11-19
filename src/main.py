@@ -4,6 +4,7 @@
 from .data import fetch_data
 
 def main():
+    fetch_data()
     
 
 if __name__ == "__main__":
