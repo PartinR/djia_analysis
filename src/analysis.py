@@ -9,6 +9,9 @@ def calculate_returns(df):
     Calculates the annualized return for each stock.
     '''
 
+    if df.empty():
+        return df
+
     # Sort and create weekly_return column using date and pct_change
     df = df.sort_values(by=['stock', 'date'])
     df['weekly_return'] = df.groupby('stock')['close'].pct_change()
