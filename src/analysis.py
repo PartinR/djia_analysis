@@ -130,7 +130,6 @@ def plot_results(df, slope, intercept):
     scatter = plt.scatter(
         x=df['annualized_std'],
         y=df['annualized_return'],
-        c=df['sharpe_ratio'],
         s=50
     )
 
