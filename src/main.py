@@ -2,13 +2,26 @@
 
 # Import statements
 from .data import fetch_data, clean_data
-from .analysis import calculate_returns
+from .analysis import calculate_return, calculate_std, calculate_sharpe_ratio
 
 def main():
-    df_raw = fetch_data()  
+    # Data handling
+    df_raw = fetch_data()
     df_clean = clean_data(df_raw)
-    df_return = calculate_returns(df_clean)
+
+    # Calculate returns
+    df_return = calculate_return(df_clean)
+
+    # Calculate standard deviation
+    df_std = calculate_std(df_clean)
+
     print(df_return)
+    print()
+    print(df_std)
+
+    # Calculate sharpe ratio
+    df_sharpe = calculate_sharpe_ratio(df_return, df_std)
+    print(df_sharpe)
 
 if __name__ == "__main__":
     main()
