@@ -24,7 +24,7 @@ def clean_data(df):
     Extract useful information from the data.
     '''
     
-    if df.empty():
+    if df.empty:
         return df
 
     # Convert 'date' to datetime object for analysis
