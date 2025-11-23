@@ -58,7 +58,7 @@ def calculate_std(df):
     return df_std[['stock','annualized_std']]
 
 def calculate_sharpe_ratio(df_return, df_std, risk_free_rate=0.02):
-    """Calculates the Sharpe ratio for each stock.
+    """Calculates the sharpe ratio for each stock.
 
     Formula: (Annualized Return - Risk Free Rate) / Annualized Risk
 
@@ -115,3 +115,39 @@ def test_hypothesis(df_sharpe_ratio, alpha=0.05):
         print("Insufficient evidence that higher risk leads to higher returns.")
 
     return slope, intercept
+
+def plot_results(df, slope, intercept):
+    '''Plots the risk vs. return scatter plot with the regression line.
+    
+    Args:
+        df: DataFrame containing 'annualized_std', 'annualized_return',
+            and 'sharpe_ratio'
+        slope: The slope of the regression line (from hypothesis_test).
+        interept: The y-intercpet of the regression line.
+    '''
+    plt.figure(figsize=(10,8))
+
+    scatter = plt.scatter(
+        x=df['annualized_std'],
+        y=df['annualized_return'],
+        c=df['sharpe_ratio'],
+        s=50
+    )
+
+    x_line = np.array([df['annualized_std'].min(), df['annualized_std'].max()])
+    y_line = slope * x_line + intercept
+
+    plt.plot(
+        x_line,
+        y_line,
+        color='red',
+        label=f'Regression Line (Slope: {slope:.2f})'
+    )
+    
+    plt.grid(axis='both', linestyle='--', linewidth=0.5)
+    plt.title('DJIA: Annualized Risk vs. Return', fontsize=14)
+    plt.xlabel('Annualized Risk (Standard Deviation)', fontsize=12)
+    plt.ylabel('Annualized Return', fontsize=12)
+    plt.legend()
+
+    plt.show()
