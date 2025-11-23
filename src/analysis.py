@@ -1,59 +1,117 @@
 # djia_analysis/src/analysis.py
+'''Performs financial analysis on DJIA stock data.
 
-# Import statements
+Calculates returns, risk (standard deviation), and sharpe ratios, and
+performs hypothesis testing on the risk-return relationship.
+'''
+
 import pandas as pd
 import numpy as np
+from scipy import stats
+import matplotlib.pyplot as plt
 
 def calculate_return(df):
-    '''
-    Calculates the annualized return for each stock.
-    '''
+    '''Calculates the annualized return for each stock.
 
+    Args:
+        df: A DataFrame containing 'stock', 'date', and 'close' columns
+
+    Returns:
+        A DataFrame with columns ['stock', 'annualized_return'].
+        Returns an empty DataFrame if input is empty. 
+    '''
     if df.empty:
         return df
 
-    # Sort and create weekly_return column using date and pct_change
     df = df.sort_values(by=['stock', 'date'])
     df['weekly_return'] = df.groupby('stock')['close'].pct_change()
 
-    # Calculate the mean of the weekly_return's
     df_return = df.groupby('stock')['weekly_return'].mean().reset_index(name='avg_weekly_return')
 
-    # Annualize the weekly_return's
+    # Annualize the weekly_returns (52 weeks in a year)
     df_return['annualized_return'] = df_return['avg_weekly_return'] * 52
 
     return df_return[['stock','annualized_return']]
 
 def calculate_std(df):
-    '''
-    Calculate the annualized standard deviation for each stock.
-    '''
+    """Calculates the annualized standard deviation (risk) for each stock.
 
+    Args:
+        df: A DataFrame containing 'stock', 'date', and 'close' columns.
+
+    Returns:
+        A DataFrame with columns ['stock', 'annualized_std'].
+        Returns an empty DataFrame if input is empty.
+    """
     if df.empty:
         return df
 
-     # Sort and create weekly_return column using date and pct_change
     df = df.sort_values(by=['stock', 'date'])
     df['weekly_return'] = df.groupby('stock')['close'].pct_change()
 
-    # Calculate the standard deviation of the weekly_return's
+    # Calculate the standard deviation
     df_std = df.groupby('stock')['weekly_return'].std().reset_index(name='avg_weekly_std')
 
-    # Annualize the standard deviation
+    # Annualize the volatility: multiply by sqrt(52) because variance scales with time
     df_std['annualized_std'] = df_std['avg_weekly_std'] * np.sqrt(52)
 
     return df_std[['stock','annualized_std']]
 
 def calculate_sharpe_ratio(df_return, df_std, risk_free_rate=0.02):
-    '''
-    Calculates the sharpe ratio for each stock.
-    Sharpe ratio = (annualized_return - risk_free_rate) / annualized_std
-    '''
+    """Calculates the Sharpe ratio for each stock.
 
-    # Merge df_returns and df_std
+    Formula: (Annualized Return - Risk Free Rate) / Annualized Risk
+
+    Args:
+        df_return: DataFrame with 'stock' and 'annualized_return'.
+        df_std: DataFrame with 'stock' and 'annualized_std'.
+        risk_free_rate: The theoretical return of an investment with zero risk.
+
+    Returns:
+        A merged DataFrame including the calculated 'sharpe_ratio'.
+    """
     df_merge = pd.merge(df_return, df_std, on='stock', how='inner')
-
-    # Calculate the sharpe_ratio
-    df_merge['sharpe_ratio'] = (df_merge['annualized_return'] - risk_free_rate) / df_merge['annualized_std']
+    df_merge['sharpe_ratio'] = (
+        (df_merge['annualized_return'] - risk_free_rate) / df_merge['annualized_std']
+    )
 
     return df_merge[['stock', 'annualized_return', 'annualized_std', 'sharpe_ratio']]
+
+def test_hypothesis(df_sharpe_ratio, alpha=0.05):
+    """Tests the null hypothesis that there is no linear relationship between risk and return.
+    
+    Performs a linear regression. The Alternative Hypothesis (Ha) is that
+    slope > 0 (higher risk leads to higher return).
+
+    Args:
+        df_sharpe_ratio: DataFrame containing 'annualized_std' and 'annualized_return'.
+        alpha: The significance level for the test. Defaults to 0.05.
+
+    Returns:
+        The slope and intercept of the linear regression line.
+    """
+    slope, intercept, r_value, p_value, std_err = stats.linregress(
+        df_sharpe_ratio['annualized_std'],
+        df_sharpe_ratio['annualized_return']
+    )
+
+    # Scipy returns a two-sided p-value. For Ha: slope > 0, we halve it.
+    # If slope is negative, p-value for Ha > 0 is 1.0 (no evidence).
+    if slope > 0:
+        p_value_one_sided = p_value / 2
+    else:
+        p_value_one_sided = 1.0
+
+    print("\n--- Hypothesis Test Results ---")
+    print(f"Regression Slope: {slope:.2f}")
+    print(f"R-Squared Value: {r_value**2:.2f}")
+    print(f"One-Sided P-Value: {p_value_one_sided:.2f}")
+
+    if p_value_one_sided < alpha and slope > 0:
+        print(f"Conclusion: Reject Null Hypothesis at {alpha:.0%} level.")
+        print("Evidence supports that higher risk leads to higher returns.")
+    else:
+        print(f"Conclusion: Fail to reject Null Hypothesis at {alpha:.0%} level.")
+        print("Insufficient evidence that higher risk leads to higher returns.")
+
+    return slope, intercept

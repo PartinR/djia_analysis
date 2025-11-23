@@ -2,7 +2,7 @@
 
 # Import statements
 from .data import fetch_data, clean_data
-from .analysis import calculate_return, calculate_std, calculate_sharpe_ratio
+from .analysis import calculate_return, calculate_std, calculate_sharpe_ratio, test_hypothesis
 
 def main():
     # Data handling
@@ -22,6 +22,8 @@ def main():
     # Calculate sharpe ratio
     df_sharpe = calculate_sharpe_ratio(df_return, df_std)
     print(df_sharpe)
+
+    slope, intercept = test_hypothesis(df_sharpe)
 
 if __name__ == "__main__":
     main()
