@@ -1,29 +1,44 @@
 # djia_analysis/src/data.py
+'''Data loading and cleaning module for DJIA analysis.'''
 
-# Import statements
 import pandas as pd
 
-# File path to be read
-path = '/Users/racepartin/repos/djia_analysis/data/dow_jones_index.data'
+# Constants
+FILE_PATH = '/Users/racepartin/repos/djia_analysis/data/dow_jones_index.data'
 
 def fetch_data():
-    '''
-    Reads locally stored data using hardcoded path.
-    '''
+    """Loads the DJIA dataset from the local CSV file.
 
+    Reads the file specified in the global FILE_PATH constant. Handles
+    errors if the file is missing.
+
+    Returns:
+        pd.DataFrame: A DataFrame containing the raw stock data. 
+        Returns an empty DataFrame if the file is not found.
+    """
     try:
-        df = pd.read_csv(path)
-        print('Data successfully loaded.')
+        df = pd.read_csv(FILE_PATH)
+        print("Data successfully loaded.")
         return df
     except FileNotFoundError:
-        print('ERROR: File cannot be located. Check file path.')
+        print(f"ERROR: File cannot be located at {FILE_PATH}. Check file path.")
         return pd.DataFrame()
 
 def clean_data(df):
-    '''
-    Extract useful information from the data.
-    '''
-    
+    """Prepares the raw DataFrame for analysis.
+
+    Performs the following cleaning operations:
+    1. Converts the 'date' column to datetime objects.
+    2. Removes '$' symbols from price columns (e.g., 'close', 'open').
+    3. Converts those price columns to numeric data types.
+
+    Args:
+        df: The raw DataFrame loaded via fetch_data().
+
+    Returns:
+        pd.DataFrame: The cleaned DataFrame with correct data types.
+        Returns an empty DataFrame if input is empty.
+    """
     if df.empty:
         return df
 
@@ -31,7 +46,10 @@ def clean_data(df):
     if 'date' in df.columns:
         df['date'] = pd.to_datetime(df['date'])
 
-    clean_price_columns = ['open', 'high', 'low', 'close', 'next_weeks_open', 'next_weeks_close']
+    clean_price_columns = [
+        'open', 'high', 'low', 'close', 
+        'next_weeks_open', 'next_weeks_close'
+    ]
 
     # Clean relevant columns by removing '$'
     for col in clean_price_columns:
