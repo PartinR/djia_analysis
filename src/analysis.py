@@ -150,3 +150,34 @@ def plot_results(df, slope, intercept):
     plt.legend()
 
     plt.show()
+
+def plot_bubble(df):
+    '''Plots the relationship: Risk (X), Return (Y), Sharpe Ratio (Color and Size).
+
+    Args:
+        df: DataFrame containing 'annualized_std', 'annualized_return',
+            and 'sharpe_ratio'.
+    '''
+    plt.figure(figsize=(10,8))
+
+    # Increase the size of the bubbles so they are more visible
+    bubble_size = df['sharpe_ratio'].abs() * 1000
+
+    scatter = plt.scatter(
+        x=df['annualized_std'],
+        y=df['annualized_return'],
+        s=bubble_size,
+        c=df['sharpe_ratio'],
+        alpha=0.6
+    )
+
+    cbar = plt.colorbar(scatter)
+    cbar.set_label('Sharpe Ratio')
+    
+    plt.grid(axis='both', linestyle='--', linewidth=0.5)
+    plt.title('DJIA: Annualized Risk vs. Return', fontsize=14)
+    plt.xlabel('Annualized Risk (Standard Deviation)', fontsize=12)
+    plt.ylabel('Annualized Return', fontsize=12)
+    plt.legend()
+
+    plt.show()

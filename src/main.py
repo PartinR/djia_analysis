@@ -7,7 +7,8 @@ from .analysis import (
     calculate_std, 
     calculate_sharpe_ratio, 
     test_hypothesis, 
-    plot_results
+    plot_results,
+    plot_bubble
 )
 
 # Constants
@@ -38,8 +39,9 @@ def main():
     slope, intercept = test_hypothesis(df_sharpe, alpha=ALPHA)
 
     # 4. Visualization
-    print("Generating Plot...")
+    print("Generating Plots...")
     plot_results(df_sharpe, slope, intercept)
+    plot_bubble(df_sharpe)
 
 if __name__ == "__main__":
     main()
