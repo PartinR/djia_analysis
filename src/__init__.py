@@ -12,7 +12,7 @@ from .analysis import (
     plot_results
 )
 
-# Optional: Define what gets imported if someone uses "from src import *"
+# Define what gets imported if someone uses "from src import *"
 __all__ = [
     'fetch_data',
     'clean_data',
