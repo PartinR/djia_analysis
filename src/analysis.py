@@ -182,7 +182,12 @@ def plot_bubble(df):
     plt.show()
 
 def plot_bar(df):
-    '''
+    '''Plots a two axis chart listing stocks in order of sharpe ratio
+    and showing annualized standard deviation for context.
+
+    Args:
+        df: DataFrame containing 'annualized_std', 'annualized_return',
+            and 'sharpe_ratio'.
     '''
     df_sort = df.sort_values(by='sharpe_ratio', ascending=False)
     fig, ax1 = plt.subplots(figsize=(14,6))
