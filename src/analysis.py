@@ -130,7 +130,8 @@ def plot_results(df, slope, intercept):
     scatter = plt.scatter(
         x=df['annualized_std'],
         y=df['annualized_return'],
-        s=50
+        s=100,
+        c='steelblue'
     )
 
     x_line = np.array([df['annualized_std'].min(), df['annualized_std'].max()])
@@ -139,7 +140,7 @@ def plot_results(df, slope, intercept):
     plt.plot(
         x_line,
         y_line,
-        color='red',
+        color='firebrick',
         label=f'Regression Line (Slope: {slope:.2f})'
     )
     
@@ -147,7 +148,6 @@ def plot_results(df, slope, intercept):
     plt.title('DJIA: Annualized Risk vs. Return', fontsize=14)
     plt.xlabel('Annualized Risk (Standard Deviation)', fontsize=12)
     plt.ylabel('Annualized Return', fontsize=12)
-    plt.legend()
 
     plt.show()
 
@@ -173,11 +173,43 @@ def plot_bubble(df):
 
     cbar = plt.colorbar(scatter)
     cbar.set_label('Sharpe Ratio')
-    
+
     plt.grid(axis='both', linestyle='--', linewidth=0.5)
     plt.title('DJIA: Annualized Risk vs. Return', fontsize=14)
     plt.xlabel('Annualized Risk (Standard Deviation)', fontsize=12)
     plt.ylabel('Annualized Return', fontsize=12)
-    plt.legend()
 
+    plt.show()
+
+def plot_bar(df):
+    '''
+    '''
+    df_sort = df.sort_values(by='sharpe_ratio', ascending=False)
+    fig, ax1 = plt.subplots(figsize=(14,6))
+
+    ax1.set_xlabel('Stocks')
+    ax1.set_ylabel('Sharpe Ratio')
+
+    bar_color = np.where(df_sort['sharpe_ratio'] > 0, 'steelblue', 'firebrick')
+    ax1.bar(
+        df_sort['stock'], 
+        df_sort['sharpe_ratio'], 
+        color=bar_color 
+    )
+
+    # Line at sharpe ratio = 0
+    ax1.axhline(0, color='gray', linewidth=0.8) 
+    plt.xticks(rotation=45, ha='right')
+
+    # Add line to represent standard deviation
+    ax2 = ax1.twinx()
+    ax2.set_ylabel('Annualized Standard Deviation (Risk)')
+    ax2.plot(
+        df_sort['stock'],
+        df_sort['annualized_std'],
+        color='black',
+        linestyle='--'
+    )
+
+    fig.tight_layout()
     plt.show()
