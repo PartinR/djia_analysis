@@ -148,6 +148,7 @@ def plot_results(df, slope, intercept):
     plt.title('DJIA: Annualized Risk vs. Return', fontsize=14)
     plt.xlabel('Annualized Risk (Standard Deviation)', fontsize=12)
     plt.ylabel('Annualized Return', fontsize=12)
+    plt.title('Scatter Plot with Regression Line')
 
     plt.show()
 
@@ -178,6 +179,7 @@ def plot_bubble(df):
     plt.title('DJIA: Annualized Risk vs. Return', fontsize=14)
     plt.xlabel('Annualized Risk (Standard Deviation)', fontsize=12)
     plt.ylabel('Annualized Return', fontsize=12)
+    plt.title('Bubble Chart')
 
     plt.show()
 
@@ -205,6 +207,7 @@ def plot_bar(df):
     # Line at sharpe ratio = 0
     ax1.axhline(0, color='gray', linewidth=0.8) 
     plt.xticks(rotation=45, ha='right')
+    plt.title('Dual-Axis Bar Chart')
 
     # Add line to represent standard deviation
     ax2 = ax1.twinx()
