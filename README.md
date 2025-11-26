@@ -24,5 +24,5 @@ djia_analysis/
 │   ├── analysis.py             # Contains math (Sharpe ratio, Std Dev) and plotting functions
 │   ├── data.py                 # Handles data loading and cleaning (removes '$', fixes dates)
 │   └── main.py                 # Entry point: orchestrates the analysis pipeline
-├── Partin_CMPS240_Report.pdf   # Final project report
+├── DJIA_Report.pdf             # Final project report
 └── README.md                   # Project documentation
